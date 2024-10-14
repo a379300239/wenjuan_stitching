@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+  <title>问卷</title>
+
+  <style>
+    .copyButton {
+      display: inline;
+      margin-left: 10px;
+    }
+  
+    #app {
+      width: 100% !important;
+      max-width: 100% !important; /* add this */
+    }
+  
+    #iframeContainer {
+      position:relative;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 90vh;
+    }
+  </style>
+  
+</head>
+
+<body>
+  <div id="app" class="container mt-5">
+    <div class="row">
+      <div class="col">
+        <div class="text-center mt-4">
+          <h2>
+            识别码：<span id="identifier">{{ identifier }}</span>
+            <button class="btn btn-primary copyButton" @click="copyIdentifier">点我复制</button>
+          </h2>
+        </div>
+      </div>
+    </div>
+
+    <div id="iframeContainer">
+      <iframe src="https://www.wjx.cn/vm/eaFEBBa.aspx " width="100%" height="100%" frameborder=0></iframe>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        identifier: '正在生成识别码...'
+      },
+      created() {
+        this.generateIdentifier();
+      },
+      methods: {
+        generateIdentifier() {
+          // fetch('https://www.ip.cn/api/index?ip&type=0')
+          //   .then(response => response.json())
+          //   .then(data => {
+          //     const ipAddress = data.ip;
+          //     const nowTime = Date.now();
+          //     const randomNum = String(Math.random());
+          //     const inputString = ipAddress + nowTime + randomNum;
+          //     const hash = sha256(inputString); // 使用SHA-256哈希算法生成识别码
+          //     this.identifier = hash.substring(0, 3); // 提取识别码的前五位
+          //   })
+          //   .catch(error => {
+          //     console.error('Error:', error);
+          //   });
+              const nowTime = Date.now();
+              const randomNum = String(Math.random());
+              const inputString = nowTime + randomNum;
+              const hash = sha256(inputString); // 使用SHA-256哈希算法生成识别码
+              this.identifier = hash.substring(0, 3); // 提取识别码的前五位
+        },
+        copyIdentifier() {
+          const identifierElement = document.getElementById('identifier');
+          const range = document.createRange();
+          range.selectNodeContents(identifierElement);
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+          document.execCommand('copy');
+          window.getSelection().removeAllRanges();
+          alert('识别码已复制！');
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
